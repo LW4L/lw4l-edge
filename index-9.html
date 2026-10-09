@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LW4L EDGE</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#09090a"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+:root{--bg:#09090a;--card:#111214;--line:#26282c;--tx:#f1eeee;--mu:#8d8585;--red:#c9181f;--g:#22c17a;--l:#ff4d52;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--tx);font:15px/1.4 Barlow,system-ui,sans-serif}
+h1,h2,.big{font-family:'Barlow Condensed',Impact,sans-serif;font-weight:700;letter-spacing:.3px}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+#app{display:flex;min-height:100vh}
+nav#side{display:none}
+main{flex:1;min-width:0;padding:12px 14px 96px;max-width:1000px;margin:0 auto;width:100%}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.logo{font:700 26px 'Barlow Condensed';color:#fff}.logo b{color:var(--red)}
+.sb{flex:1;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 12px;color:var(--mu);text-align:left;min-height:44px}
+.ib{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.card h3{font:600 13px Barlow;color:var(--mu);margin-bottom:8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.k{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.k small{color:var(--mu)}.k .big{font-size:30px;line-height:1.1}
+.g{color:var(--g)}.l{color:var(--l)}.m{color:var(--mu)}
+.edge{border-left:3px solid var(--red);background:#141415;border-radius:4px 12px 12px 4px;padding:12px 14px;margin-bottom:12px}
+.edge b{font:700 20px 'Barlow Condensed'}
+.row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);min-height:52px}
+.row:last-child{border:0}.row .s{flex:1}.row .s small{display:block;color:var(--mu)}
+.dot{width:34px;height:34px;border-radius:50%;background:#241313;display:grid;place-items:center;font:700 11px Barlow}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:20px;padding:9px 14px;white-space:nowrap;min-height:40px}
+.chip.on{background:#25272b;border-color:#9a9fa6;color:#fff}
+.btn{display:block;width:100%;background:linear-gradient(180deg,#3d4045,#17181a 55%,#2a2c30);border:1px solid #5b5f66;color:#fff;font-weight:600;border-radius:10px;padding:14px;min-height:48px;text-align:center}
+.btn.o{background:none;border:1px solid var(--line)}
+.tag{font-size:12px;border-radius:5px;padding:2px 7px;border:1px solid var(--line)}
+.tag.long{color:var(--g);border-color:#17553d}.tag.short{color:var(--l);border-color:#6b2427}
+.live{font-size:12px;font-weight:600;color:var(--red);display:inline-flex;align-items:center;gap:6px;border:1px solid var(--red);border-radius:20px;padding:3px 9px}
+.live:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--red);animation:p 1.4s infinite}
+.live.demo{color:var(--mu);border-color:#4a4040}.live.demo:before{background:var(--mu);animation:none}
+@keyframes p{50%{opacity:.25}}@media(prefers-reduced-motion:reduce){.live:before{animation:none}}
+svg.ch{width:100%;height:170px;display:block}
+.in{width:100%;background:#0b0909;border:1px solid var(--line);border-radius:10px;color:var(--tx);padding:12px;min-height:46px;font:inherit;margin-bottom:10px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.seg button{border:1px solid var(--line);border-radius:10px;padding:13px;background:var(--card)}
+.seg .on.lg{background:#0f3b2a;border-color:var(--g)}.seg .on.sh{background:#3b1013;border-color:var(--l)}
+.bar{height:8px;border-radius:4px;background:#241818;overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;background:var(--g)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal div{border-radius:8px;padding:6px 0;min-height:52px;font-size:12px;background:#0e0b0b;border:1px solid transparent}
+.cal div.w{background:#0d2a1f}.cal div.x{background:#2b1012}.cal div.sel{border-color:var(--red)}.cal b{display:block;font-size:11px;font-weight:500}
+.cal .h{background:none;min-height:0;color:var(--mu)}
+#bar{position:fixed;bottom:0;left:0;right:0;display:flex;background:#0c0909;border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));z-index:5}
+#bar button{flex:1;min-height:50px;font-size:11px;color:var(--mu);display:grid;gap:2px;place-items:center}
+#bar button.on{color:#fff}#bar button.on span{color:var(--red)}#bar span{font-size:19px}
+#bar .add span{background:linear-gradient(180deg,#4a4d52,#1a1b1d);color:#fff;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;margin-top:-18px;font-size:26px;border:3px solid var(--bg)}
+#srch{position:fixed;inset:0;background:#070606f2;z-index:9;padding:calc(14px + env(safe-area-inset-top,0px)) 14px;display:none;overflow:auto}
+.star{font-size:24px;min-width:44px;min-height:44px;color:var(--mu)}.star.on{color:var(--red)}
+.note{font-size:12px;color:var(--mu);text-align:center;margin:8px 0}
+@media(min-width:900px){
+nav#side{display:flex;flex-direction:column;gap:4px;width:210px;padding:20px 14px;border-right:1px solid var(--line);position:sticky;top:0;height:100vh}
+nav#side button{text-align:left;padding:12px;border-radius:10px;color:var(--mu)}nav#side button.on{background:#1d1e21;color:#fff}
+#bar{display:none}main{padding-bottom:30px}.grid{grid-template-columns:repeat(4,1fr)}.two{display:grid;grid-template-columns:2fr 1fr;gap:12px}svg.ch{height:230px}}
+
+#login{position:fixed;inset:0;z-index:20;overflow:auto;display:flex;flex-direction:column;justify-content:center;padding:calc(24px + env(safe-area-inset-top,0px)) 20px calc(24px + env(safe-area-inset-bottom,0px));background:radial-gradient(ellipse at 20% 30%,#1c1c1f 0,transparent 55%),repeating-linear-gradient(115deg,transparent 0 90px,#ffffff08 90px 92px,transparent 92px 230px),#050505}
+.lw{text-align:center;margin-bottom:22px}
+.wm{font:700 76px/.9 'Barlow Condensed';font-style:italic;background:linear-gradient(180deg,#fff,#8e9298);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:2px}
+.wm b{-webkit-text-fill-color:var(--red);color:var(--red)}
+.we{color:var(--red);letter-spacing:.7em;font-weight:600;margin:6px 0 0 .7em}
+.tg{font-style:italic;letter-spacing:.35em;font-size:11px;color:var(--mu);margin-top:14px}
+.lp{width:100%;max-width:420px;margin:0 auto}
+.lp h2{font:600 28px Barlow;text-align:center}.lp .sub{text-align:center;color:var(--mu);margin:2px 0 18px}
+.fi{display:flex;align-items:center;gap:10px;background:#0c0c0d;border:1px solid var(--line);border-radius:12px;padding:0 12px;margin-bottom:10px}
+.fi i{font-style:normal;color:var(--mu)}.fi input{flex:1;background:none;border:0;color:var(--tx);font:inherit;padding:15px 0;min-height:50px;outline:0}
+.fi:focus-within{border-color:#8a8f96}
+.lr{display:flex;justify-content:space-between;font-size:14px;color:var(--mu);margin:4px 0 14px}.lr label{display:flex;gap:8px;align-items:center}
+.or{text-align:center;color:var(--mu);margin:14px 0;display:flex;gap:12px;align-items:center}.or:before,.or:after{content:"";flex:1;height:1px;background:var(--line)}
+.lp .ca{text-align:center;color:var(--mu);margin-top:18px}.lp .ca b{color:#fff;border-bottom:1px solid var(--red);cursor:pointer}
+.pn{font-size:12px;color:var(--mu);text-align:center;margin-top:16px;border:1px dashed var(--line);border-radius:8px;padding:8px}
+@media(min-width:900px){#login{flex-direction:row;align-items:center;justify-content:space-around;padding:40px}.lw{text-align:left}.lw .we,.lw .tg{margin-left:0}.wm{font-size:120px}.lp{margin:0;background:#0d0d0eee;border:1px solid var(--line);border-radius:18px;padding:36px}}
+.btn{display:flex;justify-content:center;align-items:center;gap:8px}.sb{display:flex;align-items:center;gap:8px}.top .logo{display:none}nav#side button{display:flex;gap:12px;align-items:center}nav#side{overflow:auto}#bar span{display:grid;place-items:center}.star svg{fill:none}.star.on svg{fill:currentColor}.av{width:64px;height:64px;border-radius:50%;border:1px solid #5b5f66;background:linear-gradient(180deg,#3d4045,#17181a);display:grid;place-items:center;font:700 22px 'Barlow Condensed'}.pn:empty{display:none}.mseg{display:flex;gap:6px;margin-bottom:6px}.mseg button{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:13px;min-height:38px;background:var(--card)}.mseg .on{border-color:#9a9fa6;background:#25272b}.seg .on{border-color:#9a9fa6;background:#25272b}.seg .on.lg{background:#0f3b2a;border-color:var(--g)}.seg .on.sh{background:#3b1013;border-color:var(--l)}
+.sh{position:relative;width:84px;height:84px;border-radius:10px;overflow:hidden;border:1px solid var(--line);flex:none;background:#0c0c0d}.sh img{width:100%;height:100%;object-fit:cover}.sh button{position:absolute;top:3px;right:3px;background:#000b;border-radius:50%;width:26px;height:26px;display:grid;place-items:center}
+#legal{position:fixed;inset:0;z-index:30;background:var(--bg);overflow:auto;display:none;padding:calc(14px + env(safe-area-inset-top,0px)) 16px 40px;max-width:760px;margin:0 auto}#lgb h3{font:600 16px Barlow;margin:16px 0 4px;color:#fff}#lgb p{color:#c9c4c4;font-size:14px;margin-bottom:6px}
+#dlg{position:fixed;inset:0;z-index:40;background:#000b;display:none;align-items:center;justify-content:center;padding:20px}.dbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;width:100%;max-width:360px}.dbox h2{font-size:24px;margin-bottom:6px}.dbox p{margin-bottom:16px}.g5>.k:last-child{grid-column:1/-1}@media(min-width:900px){.grid.g5{grid-template-columns:repeat(5,1fr)}.g5>.k:last-child{grid-column:auto}}.mb{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-bottom:12px;font-size:13px}.mb.demo{border-style:dashed;border-color:#7a6430;background:#15120a}.mb .rd{display:flex;align-items:center;gap:8px}.mb .rd:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--g);flex:none}.mb.demo .rd:before{background:#d4a73d}.mb button{border:1px solid #5b5f66;border-radius:8px;padding:8px 12px;min-height:36px;white-space:nowrap}.lab{font-size:13px;color:var(--mu);margin:2px 0 4px;display:block}.empty{text-align:center;padding:26px 8px}.empty h2{font-size:26px;margin-bottom:6px}select.in{appearance:auto}.pr{margin:0 2px 10px}.pr span{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mu);padding:2px 0}.pr span:before{content:"";width:9px;height:9px;border-radius:50%;border:1px solid #5b5f66}.pr span.ok{color:var(--g)}.pr span.ok:before{background:var(--g);border-color:var(--g)}.lg{width:min(250px,64vw);height:auto;display:block;margin:0 auto}@media(min-width:900px){.lg{width:380px;margin:0}}</style></head><body>
+<div id="login" style="display:none"><div class="lw"><img class="lg" src="logo.png" alt="LW4L EDGE"><div class="tg">BUILD. TRACK. SHARPEN.</div></div>
+<div class="lp"><h2 id="lh">Welcome Back</h2><p class="sub">Your trades. Your data. Your edge.</p>
+<div class="fi"><i data-ic="mail"></i><input id="em" type="email" placeholder="Email" autocomplete="username"></div>
+<div class="fi"><i data-ic="lock"></i><input id="pw" type="password" placeholder="Password" autocomplete="current-password" oninput="chk()"><button onclick="pw.type=pw.type=='password'?'text':'password'" class="m" aria-label="Show password"><span data-ic="eye"></span></button></div>
+<div id="pr" class="pr" style="display:none"></div><div class="lr"><label><input type="checkbox"> Remember me</label><span onclick="forgot()" style="cursor:pointer">Forgot password?</span></div>
+<button class="btn" id="lb" onclick="submitAuth()"><span id="lt">Sign In</span> <span data-ic="arrow"></span></button>
+<p class="ca"><span id="ct">Don't have an account?</span> <b id="cb" onclick="toggleMode()">Create account</b></p>
+<p class="m" id="agr" style="display:none;font-size:12px;text-align:center;margin-top:10px">By creating an account you agree to our <u onclick="showLegal('terms')" style="cursor:pointer">Terms</u> and <u onclick="showLegal('privacy')" style="cursor:pointer">Privacy Policy</u>.</p><p class="pn" id="pn"></p><p class="note" style="margin-top:14px"><span onclick="showLegal('privacy')" style="cursor:pointer">Privacy</span> &nbsp;·&nbsp; <span onclick="showLegal('terms')" style="cursor:pointer">Terms</span> &nbsp;·&nbsp; <span onclick="showLegal('risk')" style="cursor:pointer">Risk disclaimer</span></p></div></div><div id="app"><nav id="side"></nav><main id="main"></main></div>
+<div id="bar"></div><div id="srch"></div><div id="dlg"><div class="dbox"><h2 id="dlgt"></h2><p id="dlgm" class="m"></p><button class="btn" id="dlgo" onclick="dlgOk()"></button><button class="btn o" style="margin-top:10px" onclick="dlgClose()">Cancel</button></div></div><div id="legal"><div class="top"><h1 id="lgt" style="font-size:26px;flex:1"></h1><button class="ib" onclick="closeLegal()" aria-label="Close"><span data-ic="close"></span></button></div><div id="lgb"></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const IC={home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>',journal:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/>',add:'<path d="M12 5v14M5 12h14"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',ana:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',search:'<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',back:'<path d="M15 5l-7 7 7 7"/>',close:'<path d="M6 6l12 12M18 6L6 18"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',out:'<path d="M9 4H5a1 1 0 00-1 1v14a1 1 0 001 1h4M16 8l4 4-4 4M20 12H9"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/>',arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>'};
+const ic=(n,z=22)=>`<svg viewBox="0 0 24 24" width="${z}" height="${z}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${IC[n]}</svg>`;
+const NAV=[['dash','Home','home'],['journal','Journal','journal'],['add','Add','add'],['cal','Calendar','cal'],['ana','Edge','ana'],['fav','Favorites','star']];
+let INS=[['BTCUSDT','Bitcoin / Tether','BT',67642.3,2.41],['BTCUSD','Bitcoin / US Dollar','BT',67610.1,2.38],['BTCUSDC','Bitcoin / USD Coin','BT',67638.9,2.4],['ETHUSDT','Ethereum / Tether','ET',3421.6,1.87],['SOLUSDT','Solana / Tether','SO',152.43,3.12],['EURUSD','Euro / US Dollar','EU',1.1689,.56],['EURGBP','Euro / British Pound','EU',.8351,-.12],['EURJPY','Euro / Japanese Yen','EU',186.42,.31],['GBPUSD','British Pound / US Dollar','GB',1.3158,.21],['XAUUSD','Gold / US Dollar','XA',3887.1,-.32]];
+const dec=p=>p>1000?2:p>100?2:4;
+let fav=new Set(['BTCUSDT','XAUUSD','EURUSD']),cur='BTCUSDT',tf='1D',view='dash',selDay=9;
+const fm=v=>(v<0?'-':'+')+'$'+Math.abs(v).toFixed(2),cl=v=>v<0?'l':'g';
+function rnd(seed){return()=>(seed=(seed*16807)%2147483647)/2147483647}
+function series(seed,n,start,vol,dr){const r=rnd(seed),a=[start];for(let i=1;i<n;i++)a.push(a[i-1]*(1+(r()-.5)*vol+dr));return a}
+function line(a,col,id){const w=400,h=170,mn=Math.min(...a),mx=Math.max(...a),pt=a.map((v,i)=>[i/(a.length-1)*w,h-8-(mx==mn?.5:(v-mn)/(mx-mn))*(h-16)]);const d=pt.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join('');
+return `<svg class="ch" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".28"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><path d="${d}L${w} ${h}L0 ${h}Z" fill="url(#${id})"/><path d="${d}" fill="none" stroke="${col}" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></svg>`}
+const sym=s=>INS.find(i=>i[0]==s);
+const hdr=t=>`<div class="top"><div class="logo" onclick="askLogout()" style="cursor:pointer">LW4L<b> EDGE</b></div><button class="sb" onclick="openS()">${ic('search',18)} Search pairs</button><button class="ib" onclick="go('fav')" aria-label="Favorites">${ic('star',20)}</button><button class="ib" onclick="go('acct')" aria-label="Account">${ic('user',20)}</button></div>${modebar()}`;
+function favStrip(){return `<div class="chips">${[...fav].map(s=>`<button class="chip" onclick="pair('${s}')">${s}</button>`).join('')}</div>`}
+const V={
+fav:()=>hdr()+`<h1 style="font-size:28px;margin-bottom:10px">Favorites</h1><div class="card">${INS.filter(i=>fav.has(i[0])).map(i=>`<div class="row"><button class="star on" onclick="tog('${i[0]}')">${ic('star',22)}</button><div class="s" onclick="pair('${i[0]}')">${i[0]}<small>${i[1]}</small></div><div style="text-align:right">${qv(i)}</div></div>`).join('')||'<p class="m">No favorites yet. Search a pair and tap the star.</p>'}</div><button class="btn" onclick="openS()">Search and add pairs</button><p class="note">Saved to your account, so they follow you to any device.</p>`,
+acct:()=>hdr()+`<h1 style="font-size:28px;margin-bottom:12px">Account</h1><div class="card" style="display:flex;gap:14px;align-items:center"><div class="av">${esc(((NAME||(USER&&USER.email)||'?')[0]).toUpperCase())}</div><div><b style="font-size:18px">${esc(NAME||'Trader')}</b><div class="m">${esc(USER?USER.email:'')}</div></div></div>${PROF.account_balance==null?'<div class="edge"><b>Set your account size</b><br><span class="m">We use it to calculate risk and drawdown correctly.</span></div>':''}<div class="card"><h3>Trading account</h3><label class="lab" for="ac">Currency</label><select id="ac" class="in">${['USD','EUR','GBP','JPY','AUD','CAD','CHF','NGN'].map(c=>`<option ${c==PROF.currency?'selected':''}>${c}</option>`).join('')}</select><label class="lab" for="ab">Starting account size</label><input id="ab" class="in" type="number" inputmode="decimal" min="1" placeholder="e.g. 5000" value="${PROF.account_balance??''}"><button class="btn" onclick="saveProf()">Save account settings</button><p class="note" id="sm"></p></div><div class="card"><div class="row"><span class="s">Profile</span><span class="m">Coming with the backend</span></div><div class="row"><span class="s">Security</span><span class="m">Coming with the backend</span></div><div class="row"><span class="s">Market data</span><span class="m">Demo</span></div></div><button class="btn o" onclick="askLogout()">${ic('out',20)} Log out</button>`,
+};
+function render(){$('#main').innerHTML=V[view]();hydrate();saveNav();$('#side').innerHTML='<div class="logo" style="margin-bottom:16px">LW4L<b> EDGE</b></div>'+NAV.map(n=>`<button class="${n[0]==view?'on':''}" onclick="go('${n[0]}')">${ic(n[2],20)} ${n[1]}</button>`).join('')+`<button style="margin-top:auto" onclick="askLogout()">${ic('out',20)} Log out</button>`;
+$('#bar').innerHTML=NAV.filter(n=>n[0]!='fav').map(n=>`<button class="${n[0]==view?'on':''} ${n[0]=='add'?'add':''}" onclick="go('${n[0]}')"><span>${ic(n[2],n[0]=='add'?26:22)}</span>${n[1]}</button>`).join('')}
+function go(v){if(v=='fav')setTimeout(loadQuotes,0);if(v=='add'&&(AT.step=='done'||AT.edit))resetAT();view=v;render();scrollTo(0,0)}
+function pair(s){cur=s;closeS();go('pair');loadPair()}
+function openS(){$('#srch').style.display='block';$('#srch').innerHTML=`<div class="top"><input id="q" class="in" style="margin:0" placeholder="Search pairs: BTC, EUR, XAU…" oninput="S(this.value)"><button class="ib" onclick="closeS()" aria-label="Close">${ic('close',20)}</button></div><div id="res"></div>`;S('');$('#q').focus()}
+function closeS(){$('#srch').style.display='none';PICK=false}
+function S(q){q=q.toUpperCase();const r=INS.filter(i=>i[0].includes(q));$('#res').innerHTML=(q?'':'<p class="m" style="margin-bottom:8px">Popular pairs</p>')+`<div class="card">${r.map(i=>`<div class="row"><div class="dot">${i[2]}</div><div class="s" onclick="${PICK?'pickPair':'pair'}('${i[0]}')">${i[0]}<small>${i[1]}</small></div><button class="star ${fav.has(i[0])?'on':''}" onclick="tog('${i[0]}')" aria-label="Favorite">${ic('star',22)}</button></div>`).join('')||'<p class="m">No match. Try BTC, EUR or XAU.</p>'}</div>`}
+document.querySelectorAll('[data-ic]').forEach(e=>e.innerHTML=ic(e.dataset.ic,20));
+const SBURL='https://vakknrgqceizvqlluwru.supabase.co',SBKEY='sb_publishable_BVVrnwhfz0jUhyIKc1q7kw_HV9DQf3-';
+if(!window.supabase){document.body.innerHTML='<p style="padding:28px;color:#ccc;font-family:sans-serif">LW4L EDGE could not load. Check your internet connection and refresh the page.</p>';throw new Error('offline')}
+const SB=window.supabase.createClient(SBURL,SBKEY);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let USER=null,NAME='',mode='in';
+const DEMO={BTCUSDT:[67642.3,2.41],BTCUSD:[67610.1,2.38],BTCUSDC:[67638.9,2.4],ETHUSDT:[3421.6,1.87],SOLUSDT:[152.43,3.12],EURUSD:[1.1689,.56],EURGBP:[.8351,-.12],EURJPY:[186.42,.31],GBPUSD:[1.3158,.21],USDJPY:[149.8,.1],XAUUSD:[3887.1,-.32]};
+function msg(t,bad){const e=$('#pn');e.textContent=t;e.style.color=bad?'#ff8a8d':''}
+const RULES=[['At least 8 characters',p=>p.length>=8],['An uppercase letter',p=>/[A-Z]/.test(p)],['A lowercase letter',p=>/[a-z]/.test(p)],['A number',p=>/\d/.test(p)],['A symbol (for example ! @ # $)',p=>/[^A-Za-z0-9]/.test(p)]];
+function chk(){$('#pr').innerHTML=RULES.map(r=>`<span class="${r[1]($('#pw').value)?'ok':''}">${r[0]}</span>`).join('')}
+function showLogin(){$('#login').style.display='flex'}
+function toggleMode(){mode=mode=='in'?'up':'in';$('#lh').textContent=mode=='in'?'Welcome Back':'Create your account';$('#lt').textContent=mode=='in'?'Sign In':'Create account';$('#ct').textContent=mode=='in'?"Don't have an account?":'Already have an account?';$('#cb').textContent=mode=='in'?'Create account':'Sign in';$('#pr').style.display=mode=='up'?'block':'none';$('#agr').style.display=mode=='up'?'block':'none';chk();msg('')}
+async function submitAuth(){const email=$('#em').value.trim(),password=$('#pw').value;if(!email||!password)return msg('Enter your email and password.',1);if(mode=='up'&&!RULES.every(r=>r[1](password)))return msg('Your password does not meet all the requirements yet.',1);$('#lb').disabled=true;msg('Please wait...');
+try{const back=location.origin+location.pathname;
+if(mode=='in'){const{data,error}=await SB.auth.signInWithPassword({email,password});if(error)throw error;await onSession(data.session)}
+else{const{data,error}=await SB.auth.signUp({email,password,options:{emailRedirectTo:back}});if(error)throw error;if(data.session)await onSession(data.session);else{toggleMode();msg('Check your email and confirm your account, then sign in.')}}}
+catch(e){msg(e.message||'Something went wrong. Try again.',1)}
+$('#lb').disabled=false}
+async function forgot(){const email=$('#em').value.trim();if(!email)return msg('Enter your email first, then tap Forgot password.',1);const{error}=await SB.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});msg(error?error.message:'If that email has an account, a reset link is on its way.',!!error)}
+async function loadData(){const{data:ins,error}=await SB.from('instruments').select('id,symbol,name,provider,provider_symbol').order('symbol');
+if(!error&&ins&&ins.length)INS=ins.map(r=>{const d=DEMO[r.symbol]||[100,0];return[r.symbol,r.name,r.symbol.slice(0,2),d[0],d[1],r.id,r.provider,r.provider_symbol]});
+const f=await SB.from('favorites').select('instrument_id');fav=new Set((f.data||[]).map(x=>{const i=INS.find(i=>i[5]==x.instrument_id);return i&&i[0]}).filter(Boolean));
+const p=await SB.from('profiles').select('display_name,currency,account_balance,default_risk_pct').maybeSingle();NAME=(p.data&&p.data.display_name)||'';if(p.data)PROF={currency:p.data.currency||'USD',account_balance:p.data.account_balance==null?null:Number(p.data.account_balance),default_risk_pct:p.data.default_risk_pct==null?null:Number(p.data.default_risk_pct)}}
+async function onSession(session,restore){USER=session.user;await loadData();await loadTrades();$('#login').style.display='none';$('#pw').value='';let v=PROF.account_balance==null?'acct':'dash';if(restore){const r=restoreNav();if(r&&V[r])v=r}go(v);if(v=='pair')loadPair()}
+async function signOut(){try{localStorage.removeItem('lw4l_nav')}catch(e){}await SB.auth.signOut();USER=null;NAME='';fav=new Set();MODE='real';RT=[];resetAT();PROF={currency:'USD',account_balance:null,default_risk_pct:null};showLogin();msg('')}
+async function tog(s){const i=INS.find(x=>x[0]==s);if(!i||!USER)return;const had=fav.has(s);had?fav.delete(s):fav.add(s);render();if($('#srch').style.display=='block')S($('#q').value);
+const r=had?await SB.from('favorites').delete().eq('instrument_id',i[5]):await SB.from('favorites').insert({instrument_id:i[5]});
+if(r.error){had?fav.add(s):fav.delete(s);render();if($('#srch').style.display=='block')S($('#q').value)}}
+let MODE='real',PROF={currency:'USD',account_balance:null,default_risk_pct:null};
+const money=n=>new Intl.NumberFormat(undefined,{style:'currency',currency:PROF.currency||'USD'}).format(n);
+function setMode(m){MODE=m;render()}
+const modebar=()=>MODE=='demo'?`<div class="mb demo"><span class="rd">Demo mode: sample data, nothing is saved</span><button onclick="setMode('real')">Exit demo</button></div>`:'';
+const ago=(d,h)=>{const x=new Date();x.setDate(x.getDate()-d);x.setHours(h,15,0,0);return x};
+const DT=[[0,'BTCUSDT','long',86.24,50,'Pullback','london','Confident',[]],[1,'XAUUSD','short',-32.17,45,'Breakout','new_york','FOMO',['FOMO']],[1,'EURUSD','long',47.62,25,'Pullback','london','Calm',[]],[2,'GBPUSD','short',-18.75,25,'Reversal','asia','Hesitant',['Early entry']],[2,'BTCUSDT','long',120.03,50,'Trend Follow','new_york','Confident',[]],[3,'XAUUSD','long',61.11,40,'Breakout','london','Calm',[]],[3,'EURUSD','short',-25,25,'Reversal','asia','Hesitant',['Moved stop']],[4,'SOLUSDT','long',74.5,40,'Pullback','london','Confident',[]],[5,'BTCUSDT','short',-48,50,'Scalping','new_york','FOMO',['FOMO','Early entry']],[5,'ETHUSDT','long',93.2,40,'Trend Follow','london','Calm',[]],[6,'EURUSD','long',31.4,25,'Pullback','london','Calm',[]],[7,'XAUUSD','short',-36,40,'Reversal','asia','Hesitant',['No confirmation']],[7,'GBPUSD','long',52.8,25,'Breakout','new_york','Confident',[]],[8,'BTCUSDT','long',68.9,50,'Pullback','london','Confident',[]],[8,'EURJPY','short',-22.4,25,'Scalping','asia','Hesitant',['Early entry']],[9,'SOLUSDT','long',58.7,40,'Trend Follow','london','Calm',[]]].map((a,i)=>{const d=ago(a[0],8+i%9);return{id:'d'+i,d,cd:d,open:false,sym:a[1],side:a[2],pnl:a[3],risk:a[4],strat:a[5],session:a[6],emo:a[7],mis:a[8],notes:'',shots:[]}});
+const blankAT=()=>({side:'long',slm:'p',tpm:'p',mis:[],shots:[],ns:[],session:'',strat:'',emo:'',step:'',edit:null});
+let RT=[],RANGE='All',JF='all',JQ='',CM=new Date(),AT=blankAT(),PICK=false,LAST=null,DID=null;
+const resetAT=()=>{AT=blankAT()};
+selDay=new Date().getDate();
+const TR=()=>(MODE=='demo'?DT:RT).slice().sort((a,b)=>b.d-a.d);
+const CLS=()=>TR().filter(t=>!t.open);
+const BAL=()=>MODE=='demo'?10000:(PROF.account_balance||0);
+const EQ=()=>BAL()+CLS().reduce((a,t)=>a+t.pnl,0);
+const AVAIL=ex=>EQ()-TR().filter(t=>t.open&&t.id!=ex&&t.val).reduce((a,t)=>a+t.val/(t.lev||1),0);
+const rng=()=>{const l=CLS();if(RANGE=='All')return l;const c=Date.now()-(RANGE=='7D'?7:30)*864e5;return l.filter(t=>t.cd>=c)};
+const rOf=t=>t.risk>0?t.pnl/t.risk:null;
+function stats(l){const w=l.filter(t=>t.pnl>0),ls=l.filter(t=>t.pnl<0),dc=w.length+ls.length,gw=w.reduce((a,t)=>a+t.pnl,0),gl=-ls.reduce((a,t)=>a+t.pnl,0),rs=l.map(rOf).filter(x=>x!=null),tot=l.reduce((a,t)=>a+t.pnl,0);
+let eq=BAL(),pk=eq,dd=0,ddp=0;const curve=[eq];l.slice().sort((a,b)=>a.cd-b.cd).forEach(t=>{eq+=t.pnl;curve.push(eq);pk=Math.max(pk,eq);if(pk-eq>dd){dd=pk-eq;ddp=pk>0?dd/pk*100:0}});
+return{n:l.length,w:w.length,l:ls.length,wr:dc?w.length/dc*100:null,pnl:tot,ar:rs.length?rs.reduce((a,x)=>a+x,0)/rs.length:null,dd,ddp,curve,pf:gl>0?gw/gl:null,ex:l.length?tot/l.length:null,aw:w.length?gw/w.length:null,al:ls.length?gl/ls.length:null}}
+const nz=(v,f)=>v==null?'—':f(v);
+const sg=v=>(v<0?'-':'+')+money(Math.abs(v));
+const none=t=>`<p class="m" style="padding:12px 0">${t}</p>`;
+const SES={asia:'Asia',london:'London',new_york:'New York'};
+function grp(l,k){const m={};l.forEach(t=>{const key=k(t);if(!key)return;(m[key]=m[key]||[]).push(t)});return Object.entries(m).map(([name,a])=>{const w=a.filter(t=>t.pnl>0).length,d=a.filter(t=>t.pnl!=0).length;return{name,n:a.length,wr:d?w/d*100:0}}).sort((a,b)=>b.wr-a.wr)}
+const dfmt=d=>d.toLocaleDateString(undefined,{month:'short',day:'numeric'});
+const fdt=d=>d.toLocaleString([],{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+const hold=(a,b)=>{const ms=b-a;if(!(ms>0))return '—';const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);return(d?d+'d ':'')+(h?h+'h ':'')+m+'m'};
+const loc=d=>{const x=new Date(d);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,16)};
+const nowLocal=()=>loc(new Date());
+const sessionFor=s=>{const h=new Date(s).getUTCHours();return h<8?'asia':h<13?'london':h<21?'new_york':'asia'};
+const tr=t=>`<div class="row" onclick="openT('${t.id}')" style="cursor:pointer"><div class="dot">${esc(t.sym.slice(0,2))}</div><div class="s">${esc(t.sym)}<small>${dfmt(t.d)}${t.strat?' · '+esc(t.strat):''}</small></div><span class="tag ${t.side}">${t.side=='long'?'Long':'Short'}</span>${t.open?'<span class="tag">Open</span>':`<b class="${cl(t.pnl)}">${sg(t.pnl)}</b>`}</div>`;
+const COLS='id,side,entry_price,exit_price,stop_loss,take_profit,position_size,leverage,risk_amount,risk_pct,pnl,session,emotion,mistakes,notes,opened_at,closed_at,instrument_id,strategies(name)';
+const norm=x=>{const i=INS.find(i=>i[5]==x.instrument_id),sym=i?i[0]:'?',e=x.entry_price==null?null:+x.entry_price,q=x.position_size==null?null:+x.position_size,d=new Date(x.opened_at);
+return{id:x.id,d,cd:x.closed_at?new Date(x.closed_at):d,open:x.pnl==null&&!x.closed_at,sym,side:x.side,pnl:x.pnl==null?0:+x.pnl,risk:x.risk_amount==null?0:+x.risk_amount,strat:x.strategies?x.strategies.name:'',session:x.session,emo:x.emotion,mis:x.mistakes||[],e,x:x.exit_price==null?null:+x.exit_price,sl:x.stop_loss==null?null:+x.stop_loss,tp:x.take_profit==null?null:+x.take_profit,q,lev:x.leverage==null?null:+x.leverage,val:(cls(sym)=='crypto'&&e&&q)?e*q:null,notes:x.notes||'',shots:x.screenshots||[]}};
+async function loadTrades(){let r=await SB.from('trades').select(COLS+',screenshots').order('opened_at',{ascending:false});if(r.error)r=await SB.from('trades').select(COLS).order('opened_at',{ascending:false});if(r.error){RT=[];return}RT=(r.data||[]).map(norm)}
+function delT(id){ask('Delete this trade?','This cannot be undone.','Delete',()=>doDel(id))}
+async function doDel(id){const{error}=await SB.from('trades').delete().eq('id',id);if(error)return alert(error.message);await loadTrades();go('journal')}
+function openT(id){DID=id;go('detail')}
+V.dash=()=>{const l=rng(),s=stats(l),b=grp(CLS(),t=>t.strat).filter(x=>x.n>=3)[0],op=TR().filter(t=>t.open).length,hr=new Date().getHours(),gr=hr<12?'Good morning':hr<18?'Good afternoon':'Good evening';
+const edge=b?`<b>${esc(b.name)}</b><br><span class="m">${b.wr.toFixed(0)}% win rate across ${b.n} trades. Your strongest setup so far.</span>`:`<b>Your edge shows up here</b><br><span class="m">Log at least 3 closed trades with the same setup and we will show where you win most.</span>`;
+const pc=BAL()?(s.pnl/BAL()*100):0;
+return hdr()+`<h1 style="font-size:30px">${gr}${NAME?', '+esc(NAME):''}.</h1><p class="m" style="margin-bottom:12px">Discipline today. Freedom tomorrow.</p>
+<div class="chips">${['7D','30D','All'].map(r=>`<button class="chip ${r==RANGE?'on':''}" onclick="RANGE='${r}';render()">${r=='All'?'All time':'Last '+r}</button>`).join('')}</div>
+<div class="k" style="margin-bottom:10px"><small>Account balance</small><div class="big">${BAL()?money(EQ()):'Set your account size'}</div><small>${BAL()?'Started with '+money(BAL()):'Open Account to add it'}</small></div>
+<div class="edge"><small class="m">Your edge right now</small><br>${edge}</div>
+<div class="grid g5"><div class="k"><small>Total P&L</small><div class="big ${s.pnl<0?'l':s.pnl>0?'g':''}">${s.n?sg(s.pnl):money(0)}</div><small>${BAL()?(pc>=0?'+':'')+pc.toFixed(1)+'% of starting size':'—'}</small></div><div class="k"><small>Win rate</small><div class="big">${nz(s.wr,v=>v.toFixed(1)+'%')}</div><small>${s.w}W / ${s.l}L</small></div><div class="k"><small>Total trades</small><div class="big">${s.n}</div><small>${RANGE=='All'?'Closed':'Closed, last '+RANGE}${op?' · '+op+' open':''}</small></div><div class="k"><small>Avg R:R</small><div class="big">${nz(s.ar,v=>v.toFixed(2))}</div><small>Target 1.5+</small></div><div class="k"><small>Max drawdown</small><div class="big ${s.dd?'l':''}">${s.dd?'-'+s.ddp.toFixed(1)+'%':'0%'}</div><small>${s.dd?'-'+money(s.dd):money(0)}</small></div></div>
+${s.n>0&&s.n<10?`<p class="note">Low sample: ${s.n} closed trade${s.n>1?'s':''}. Treat win rate and R:R with caution until you have 10 or more.</p>`:''}
+<div class="card" style="margin-top:12px"><h3>Equity curve</h3>${line(s.curve.length>1?s.curve:[BAL(),BAL()],s.pnl<0?'#ff4d52':'#22c17a','e1')}${s.n?'':'<p class="note">Starts at your account size and moves as you close trades.</p>'}</div>
+<div class="card"><h3>Favorites</h3>${fav.size?favStrip():'<p class="m">Star a pair to see it here.</p>'}<button class="m" onclick="go('fav')">Manage favorites</button></div>
+<div class="card"><h3>Recent trades</h3>${TR().length?TR().slice(0,4).map(tr).join(''):`<p class="m" style="padding:6px 0 14px">No trades yet.</p><button class="btn" onclick="go('add')">Add trade</button>`}</div>`};
+function jrows(q){q=(q||'').toUpperCase();let l=TR().filter(t=>!q||t.sym.includes(q)||(t.strat||'').toUpperCase().includes(q));if(JF=='long'||JF=='short')l=l.filter(t=>t.side==JF);if(JF=='win')l=l.filter(t=>!t.open&&t.pnl>0);if(JF=='loss')l=l.filter(t=>!t.open&&t.pnl<0);if(JF=='open')l=l.filter(t=>t.open);return l.length?l.map(tr).join(''):none(TR().length?'No trades match.':'No trades yet. Tap + to add your first.')}
+V.journal=()=>hdr()+`<h1 style="font-size:28px;margin-bottom:10px">Journal</h1><input class="in" placeholder="Search by pair or setup" value="${esc(JQ)}" oninput="JQ=this.value;$('#jl').innerHTML=jrows(JQ)"><div class="chips">${[['all','All'],['open','Open'],['long','Long'],['short','Short'],['win','Wins'],['loss','Losses']].map(x=>`<button class="chip ${JF==x[0]?'on':''}" onclick="JF='${x[0]}';render()">${x[1]}</button>`).join('')}</div><div class="card" id="jl">${jrows(JQ)}</div>`;
+V.cal=()=>{const y=CM.getFullYear(),m=CM.getMonth(),first=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate(),by={};CLS().filter(t=>t.cd.getFullYear()==y&&t.cd.getMonth()==m).forEach(t=>{const k=t.cd.getDate();(by[k]=by[k]||[]).push(t)});
+let c='';for(let i=0;i<first;i++)c+='<div class="h"></div>';
+for(let d=1;d<=dim;d++){const a=by[d],p=a?a.reduce((s,t)=>s+t.pnl,0):0;c+=`<div class="${a?(p>0?'w':p<0?'x':''):''} ${d==selDay?'sel':''}" onclick="selDay=${d};render()">${d}${a?`<b class="${cl(p)}">${p>0?'+':''}${Math.round(p)}</b>`:''}</div>`}
+const sel=by[selDay]||[],sp=sel.reduce((s,t)=>s+t.pnl,0);
+return hdr()+`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><button class="ib" aria-label="Previous month" onclick="CM=new Date(${y},${m-1},1);selDay=1;render()">${ic('back',20)}</button><h1 style="font-size:26px">${CM.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</h1><button class="ib" aria-label="Next month" style="transform:scaleX(-1)" onclick="CM=new Date(${y},${m+1},1);selDay=1;render()">${ic('back',20)}</button></div><div class="cal" style="margin-bottom:6px">${'SMTWTFS'.split('').map(x=>`<div class="h">${x}</div>`).join('')}</div><div class="cal">${c}</div><p class="note">Profit is booked on the day a trade closes.</p><div class="card" style="margin-top:12px"><h3>${new Date(y,m,selDay).toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'})}</h3>${sel.length?`<div class="big ${cl(sp)}" style="font-size:30px">${sg(sp)}</div><small class="m">${sel.length} trade${sel.length>1?'s':''}</small>${sel.map(tr).join('')}`:'<p class="m">No closed trades this day.</p>'}</div>`};
+V.ana=()=>{const l=CLS(),s=stats(l),st=grp(l,t=>t.strat),se=grp(l,t=>SES[t.session]),mm={};l.forEach(t=>(t.mis||[]).forEach(x=>mm[x]=(mm[x]||0)+1));const ms=Object.entries(mm).sort((a,b)=>b[1]-a[1]),bt=st.filter(x=>x.n>=3),bs=bt[0],ws=bt.length>1?bt[bt.length-1]:null;
+const edge=bs?`<b>Best:</b> ${esc(bs.name)} (${bs.wr.toFixed(0)}% over ${bs.n} trades)${ws?`<br><b>Weakest:</b> ${esc(ws.name)} (${ws.wr.toFixed(0)}% over ${ws.n} trades)`:''}`:`<b>Where is my edge?</b><br><span class="m">Log at least 3 closed trades with the same setup to see your strongest and weakest strategies.</span>`;
+const bars=a=>a.length?a.map(x=>`<div style="margin:8px 0">${esc(x.name)} <small class="m">(${x.n})</small><b style="float:right">${x.wr.toFixed(0)}%</b><div class="bar"><i style="width:${x.wr}%;background:${x.wr<50?'var(--l)':'var(--g)'}"></i></div></div>`).join(''):none('No closed trades yet.');
+return hdr()+`<h1 style="font-size:28px;margin-bottom:10px">Analytics</h1><div class="edge">${edge}</div><div class="grid"><div class="k"><small>Profit factor</small><div class="big">${nz(s.pf,v=>v.toFixed(2))}</div></div><div class="k"><small>Expectancy</small><div class="big ${s.ex>0?'g':s.ex<0?'l':''}">${nz(s.ex,v=>sg(v))}</div></div><div class="k"><small>Avg win</small><div class="big g">${nz(s.aw,v=>money(v))}</div></div><div class="k"><small>Avg loss</small><div class="big l">${nz(s.al,v=>money(v))}</div></div></div><div class="card" style="margin-top:12px"><h3>Win rate by strategy</h3>${bars(st)}</div><div class="card"><h3>Win rate by session</h3>${bars(se)}</div><div class="card"><h3>Mistakes you repeat</h3>${ms.length?ms.map(m=>`<div class="row" style="min-height:44px"><span class="s">${esc(m[0])}</span><b class="l">${m[1]}x</b></div>`).join(''):none('No mistakes logged yet.')}</div>`};
+const SETUPS=['Pullback','Breakout','Reversal','Scalping','Trend Follow'],EMOS=['Calm','Confident','Hesitant','FOMO'],MIS=['Early entry','Moved stop','FOMO','No confirmation','Revenge trade','Oversized'];
+const one=(arr,key)=>`<div class="chips">${arr.map(x=>`<button class="chip ${AT[key]==x?'on':''}" onclick="AT.${key}=AT.${key}=='${x}'?'':'${x}';render()">${x}</button>`).join('')}</div>`;
+const cls=s=>/^X(AU|AG)/.test(s)?'metal':(/(USDT|USDC)$|^(BTC|ETH|SOL)/.test(s)?'crypto':'forex');
+const nn=x=>(x===undefined||x===''||x===null)?null:parseFloat(x);
+function usd(sym,c,diff,lots,ref){if(c=='crypto')return{v:diff*lots};if(c=='metal')return{v:diff*100*lots};const u=lots*1e5,q=sym.slice(3,6),b=sym.slice(0,3);if(q=='USD')return{v:diff*u};if(b=='USD')return{v:diff*u/ref};const r=q=='JPY'?1/DEMO.USDJPY[0]:q=='GBP'?DEMO.GBPUSD[0]:q=='EUR'?DEMO.EURUSD[0]:null;return r?{v:diff*u*r,est:true}:{v:null,est:true}}
+function calc(a){a=a||AT;const sym=a.sym,c=sym?cls(sym):null,dir=a.side=='long'?1:-1,e=nn(a.entry),lev=Math.max(1,nn(a.lev)||1),o={c,lev,warn:[],info:[],est:false},eq=EQ(),av=AVAIL(a.edit);o.eq=eq;o.avail=av;let q=null;
+if(c=='crypto'){o.bp=av*lev;const v=nn(a.val);if(v>0&&e>0){q=v/e;o.val=v;o.qty=q;o.margin=v/lev}}else if(c)q=nn(a.size);
+if(!(sym&&e>0&&q>0))return o;
+const uv=usd(sym,c,1,q,e).v,f=p=>{const r=usd(sym,c,(p-e)*dir,q,p);if(r.est)o.est=true;return r.v};
+let sl=null;const sv=nn(a.sl);if(sv>0){if(a.slm=='p')sl=sv;else if(uv){sl=e-dir*(a.slm=='a'?sv:eq*sv/100)/uv}}
+o.slP=sl;if(sl>0){o.loss=f(sl);o.risk=o.loss==null?null:Math.max(0,-o.loss);if(o.risk&&eq)o.riskPct=o.risk/eq*100}
+let tp=null;const tv=nn(a.tp);if(tv>0){if(a.tpm=='p')tp=tv;else if(uv){const am=a.tpm=='a'?tv:(o.risk>0?tv*o.risk:null);if(am!=null)tp=e+dir*am/uv}}
+o.tpP=tp;if(tp>0)o.profit=f(tp);if(o.profit!=null&&o.risk>0)o.rr=o.profit/o.risk;
+const ex=nn(a.exit);if(ex>0)o.result=f(ex);
+if(c=='crypto'&&o.margin){if(o.profit!=null)o.roeTp=o.profit/o.margin*100;if(o.loss!=null)o.roeSl=o.loss/o.margin*100}
+if(c=='crypto'&&lev>1)o.liq=dir>0?e*(1-1/lev+.005):e*(1+1/lev-.005);
+if(c=='forex'){const pip=sym.endsWith('JPY')?.01:.0001;if(sl>0)o.slPips=Math.abs(e-sl)/pip;if(tp>0)o.tpPips=Math.abs(tp-e)/pip}
+if(sl>0&&(a.side=='long'?sl>=e:sl<=e))o.warn.push('Your stop loss is on the wrong side of your entry for a '+a.side+'.');
+if(tp>0&&(a.side=='long'?tp<=e:tp>=e))o.warn.push('Your take profit is on the wrong side of your entry for a '+a.side+'.');
+if(o.liq&&sl>0&&(dir>0?sl<=o.liq:sl>=o.liq))o.warn.push('Your stop loss is beyond your estimated liquidation price. The exchange would likely liquidate you first.');
+if(c=='crypto'&&o.val>o.bp+1e-9)o.warn.push('Position value is above your buying power of '+money(o.bp)+'.');
+if(o.riskPct>5)o.warn.push('This trade risks '+o.riskPct.toFixed(1)+'% of your account. Many traders keep it under 2%.');
+if(!eq)o.warn.push('Set your account size on the Account page so balance and risk can be calculated.');
+if(!(sl>0))o.info.push('No stop loss: risk is not tracked for this trade.');
+if((PROF.currency||'USD')!='USD')o.info.push('These numbers assume a USD account.');
+return o}
+const rw=(l,v)=>`<div class="row" style="min-height:38px"><span class="s">${l}</span><b>${v}</b></div>`;
+function calcHtml(a){a=a||AT;if(!a.sym)return '<p class="m">Pick a pair to begin.</p>';const o=calc(a);let h='';
+if(o.c=='crypto'){h+=rw('Available balance',money(o.avail))+rw('Buying power ('+o.lev+'x)',money(o.bp));if(o.val)h+=rw('Position value',money(o.val))+rw('Margin needed',money(o.margin))+rw('Quantity',o.qty.toFixed(o.qty<1?5:3)+' '+a.sym.replace(/(USDT|USDC|USD)$/,''));if(o.liq)h+=rw('Liquidation (estimate)',fmtN(o.liq))}
+if(o.slP&&a.slm!='p')h+=rw('Stop loss price',fmtN(o.slP));if(o.tpP&&a.tpm!='p')h+=rw('Take profit price',fmtN(o.tpP));
+if(o.profit!=null)h+=rw('Expected profit',`<span class="g">${sg(o.profit)}</span>`+(o.roeTp!=null?` <small class="m">(${o.roeTp.toFixed(0)}% on margin)</small>`:''));
+if(o.loss!=null)h+=rw('Expected loss',`<span class="l">${sg(o.loss)}</span>`+(o.roeSl!=null?` <small class="m">(${o.roeSl.toFixed(0)}% on margin)</small>`:''));
+if(o.rr!=null)h+=rw('Planned R:R','1 : '+o.rr.toFixed(2));
+if(o.risk!=null)h+=rw('Risk',money(o.risk)+(o.riskPct!=null?' ('+o.riskPct.toFixed(2)+'% of account)':''));
+if(o.slPips!=null)h+=rw('Stop distance',o.slPips.toFixed(1)+' pips');if(o.tpPips!=null)h+=rw('Target distance',o.tpPips.toFixed(1)+' pips');
+if(o.result!=null)h+=rw('Result at your exit',`<span class="${cl(o.result)}">${sg(o.result)}</span>`);
+if(!h)h='<p class="m">Enter your entry and size to see your numbers.</p>';
+return h+(o.est?'<p class="note">Estimate: this pair needs a currency conversion we do not have live yet.</p>':'')+o.warn.map(w=>`<p class="note" style="color:#ff8a8d;text-align:left">${esc(w)}</p>`).join('')+o.info.map(w=>`<p class="note" style="text-align:left">${esc(w)}</p>`).join('')}
+function upd(){const e=$('#calc');if(e)e.innerHTML=calcHtml();const o=calc(),s=$('#slh'),t=$('#tph');if(s)s.textContent=AT.slm!='p'&&o.slP?'Stop loss at '+fmtN(o.slP):'';if(t)t.textContent=AT.tpm!='p'&&o.tpP?'Take profit at '+fmtN(o.tpP):''}
+const fi=(k,ph,lab)=>`<label class="lab">${lab}</label><input class="in" type="number" inputmode="decimal" step="any" placeholder="${ph}" value="${esc(AT[k]||'')}" oninput="AT.${k}=this.value;upd()">`;
+const mseg=(key,opts,id,ph)=>`<div class="mseg">${opts.map(x=>`<button class="${AT[key]==x[0]?'on':''}" onclick="AT.${key}='${x[0]}';AT.${key=='slm'?'sl':'tp'}='';render()">${x[1]}</button>`).join('')}</div><input class="in" type="number" inputmode="decimal" step="any" placeholder="${ph[AT[key]]}" value="${esc(AT[key=='slm'?'sl':'tp']||'')}" oninput="AT.${key=='slm'?'sl':'tp'}=this.value;upd()"><p class="note" id="${id}"></p>`;
+function autoSes(){if(!AT.sesMan)AT.session=sessionFor(AT.at)}
+function setLev(x){AT.lev=String(x);render()}
+function pctVal(p){const o=calc();if(o.bp>0){AT.val=(o.bp*p/100).toFixed(2);render()}}
+async function useLive(){const i=sym(AT.sym);if(!LIVEOK(i))return;try{const t=await tick(i);AT.entry=String(t.last);render()}catch(e){alert('Live price is unavailable right now.')}}
+V.add=()=>{if(AT.step=='done')return doneView();if(AT.step=='review')return reviewView();if(!AT.at){AT.at=nowLocal();autoSes()}const c=AT.sym?cls(AT.sym):null,live=c=='crypto'&&LIVEOK(sym(AT.sym));
+const ttl=AT.edit?(AT.closing?'Close trade':'Edit trade'):'Add trade';
+return hdr()+`<h1 style="font-size:28px;margin-bottom:10px">${ttl}</h1><div class="seg"><button class="${AT.side=='long'?'on lg':''}" onclick="AT.side='long';render()">Long</button><button class="${AT.side=='short'?'on sh':''}" onclick="AT.side='short';render()">Short</button></div>
+<button class="in" style="text-align:left" onclick="PICK=true;openS(1)">${ic('search',18)} ${AT.sym?esc(AT.sym):'Pick a pair'}</button>${fav.size?`<div class="chips">${[...fav].map(s=>`<button class="chip ${AT.sym==s?'on':''}" onclick="AT.sym='${s}';render()">${s}</button>`).join('')}</div>`:''}
+<label class="lab">Entry time</label><div style="display:flex;gap:8px"><input class="in" type="datetime-local" value="${AT.at}" onchange="AT.at=this.value;autoSes();render()"><button class="chip" style="height:46px" onclick="AT.at=nowLocal();autoSes();render()">Now</button></div>
+${fi('entry','0.00','Entry price')}${live?'<button class="chip" style="margin:-4px 0 10px" onclick="useLive()">Use live price</button>':''}
+${c=='crypto'?`<label class="lab">Leverage (x)</label><div class="chips">${[1,5,10,20,50,100].map(x=>`<button class="chip ${nn(AT.lev)==x?'on':''}" onclick="setLev(${x})">${x}x</button>`).join('')}</div><input class="in" type="number" inputmode="decimal" step="any" placeholder="Custom leverage" value="${esc(AT.lev||'')}" oninput="AT.lev=this.value;upd()">
+${fi('val','e.g. 100','Position value (USDT)')}<div class="chips">${[25,50,75,100].map(p=>`<button class="chip" onclick="pctVal(${p})">${p==100?'Max':p+'%'}</button>`).join('')}</div>`:c?fi('size','e.g. 0.10','Lot size'):''}
+<label class="lab">Stop loss (optional)</label>${mseg('slm',[['p','Price'],['a','Risk $'],['pc','Risk %']],'slh',{p:'0.00',a:'Amount you will risk',pc:'% of account'})}
+<label class="lab">Take profit (optional)</label>${mseg('tpm',[['p','Price'],['a','Profit $'],['r','R multiple']],'tph',{p:'0.00',a:'Profit you expect',r:'e.g. 2'})}
+<label class="lab" style="margin-top:6px">Exit (leave empty for a live trade)</label>${fi('exit','Exit price (optional)','Exit price')}
+<label class="lab">Exit time</label><div style="display:flex;gap:8px"><input class="in" type="datetime-local" value="${AT.xt||''}" onchange="AT.xt=this.value;render()"><button class="chip" style="height:46px" onclick="AT.xt=nowLocal();render()">Now</button></div>
+<div class="card"><h3>Your numbers</h3><div id="calc">${calcHtml()}</div></div>
+${fi('pnl','Overrides the calculated result','Actual result from your broker (optional, minus for a loss)')}
+<label class="lab" style="margin-top:12px">Session (set from your entry time)</label><div class="chips">${[['asia','Asia'],['london','London'],['new_york','New York']].map(x=>`<button class="chip ${AT.session==x[0]?'on':''}" onclick="AT.session='${x[0]}';AT.sesMan=true;render()">${x[1]}</button>`).join('')}</div>
+<label class="lab">Setup</label>${one(SETUPS,'strat')}<label class="lab">How did you feel?</label>${one(EMOS,'emo')}
+<label class="lab">Mistakes (optional)</label><div class="chips">${MIS.map(x=>`<button class="chip ${AT.mis.includes(x)?'on':''}" onclick="AT.mis=AT.mis.includes('${x}')?AT.mis.filter(y=>y!='${x}'):[...AT.mis,'${x}'];render()">${x}</button>`).join('')}</div>
+<textarea class="in" rows="3" placeholder="Why did you take it? Notes" oninput="AT.notes=this.value">${esc(AT.notes||'')}</textarea>
+<label class="lab">Screenshots (up to 5)</label><div class="chips" style="align-items:center">${AT.shots.map((p,i)=>`<div class="sh"><img data-p="${esc(p)}" alt="Screenshot"><button aria-label="Remove" onclick="AT.shots.splice(${i},1);render()">${ic('close',12)}</button></div>`).join('')}${AT.ns.map((s,i)=>`<div class="sh"><img src="${s.u}" alt="Screenshot"><button aria-label="Remove" onclick="AT.ns.splice(${i},1);render()">${ic('close',12)}</button></div>`).join('')}${AT.shots.length+AT.ns.length<5?`<label class="chip" style="cursor:pointer">Add<input type="file" accept="image/*" multiple hidden onchange="addShots(this)"></label>`:''}</div>
+<button class="btn" style="margin-top:12px" ${MODE=='demo'?'disabled style="opacity:.5"':''} onclick="review()">Review trade</button><p class="note" id="svm">${MODE=='demo'?'Demo mode: nothing is saved. Switch to Real mode from the Account page to log trades.':''}</p>`};
+function shrink(f){return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(f);im.onload=()=>{const k=Math.min(1,1280/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);c.toBlob(b=>{URL.revokeObjectURL(u);b?res(b):rej()},'image/jpeg',.8)};im.onerror=()=>rej();im.src=u})}
+async function addShots(inp){const room=5-AT.shots.length-AT.ns.length;for(const f of [...inp.files].slice(0,Math.max(0,room))){try{const b=await shrink(f);AT.ns.push({b,u:URL.createObjectURL(b)})}catch(e){}}inp.value='';render()}
+const SU={};async function hydrate(){for(const im of document.querySelectorAll('img[data-p]')){const p=im.dataset.p;try{if(!SU[p]){const r=await SB.storage.from('trade-shots').createSignedUrl(p,3600);SU[p]=r.data&&r.data.signedUrl}if(SU[p])im.src=SU[p]}catch(e){}}}
+const isClosed=a=>nn(a.exit)>0||nn(a.pnl)!=null;
+const finalRes=(a,o)=>nn(a.pnl)!=null?nn(a.pnl):o.result;
+function review(){const m=$('#svm'),o=calc(),c=AT.sym?cls(AT.sym):null;
+if(!AT.sym)return m.textContent='Pick a pair first.';
+if(!(nn(AT.entry)>0))return m.textContent='Enter the entry price.';
+if(c=='crypto'&&!(nn(AT.val)>0))return m.textContent='Enter the position value in USDT.';
+if(c&&c!='crypto'&&!(nn(AT.size)>0))return m.textContent='Enter the lot size.';
+if(isClosed(AT)){const r=finalRes(AT,o);if(r==null||isNaN(r))return m.textContent='Enter an exit price, or the actual result from your broker.';if(!AT.xt)AT.xt=nowLocal();if(new Date(AT.xt)<new Date(AT.at))return m.textContent='Exit time must be after entry time.'}
+AT.step='review';render();scrollTo(0,0)}
+function reviewView(){const o=calc(),c=cls(AT.sym),cl_=isClosed(AT),res=cl_?finalRes(AT,o):null,v=x=>nn(x)==null?'—':fmtN(nn(x));
+return hdr()+`<h1 style="font-size:28px;margin-bottom:10px">Review your trade</h1><div class="card">${rw('Pair',esc(AT.sym)+' · '+(AT.side=='long'?'Long':'Short'))}${rw('Status',cl_?'Closed':'Open (live trade)')}${rw('Entry time',esc(fdt(new Date(AT.at))))}${rw('Exit time',cl_?esc(fdt(new Date(AT.xt))):'—')}${cl_?rw('Holding time',hold(new Date(AT.at),new Date(AT.xt))):''}${rw('Entry',v(AT.entry))}${rw('Exit',v(AT.exit))}${rw('Stop loss',o.slP?fmtN(o.slP):'—')}${rw('Take profit',o.tpP?fmtN(o.tpP):'—')}${c=='crypto'?rw('Position value',nn(AT.val)?money(nn(AT.val)):'—')+rw('Leverage',(o.lev||1)+'x'):rw('Lot size',v(AT.size))}</div><div class="card"><h3>Numbers</h3>${calcHtml()}${cl_?rw('Final result',`<span class="${cl(res)}">${sg(res)}</span>`):''}${nn(AT.pnl)!=null?'<p class="note">Using the result you entered.</p>':''}</div><div class="card">${rw('Setup',esc(AT.strat||'—'))}${rw('Session',esc(SES[AT.session]||'—'))}${rw('Feeling',esc(AT.emo||'—'))}${rw('Mistakes',esc(AT.mis.join(', ')||'—'))}${rw('Notes',esc(AT.notes||'—'))}${rw('Screenshots',AT.shots.length+AT.ns.length)}</div><button class="btn" id="sv" onclick="saveTrade()">${AT.edit?'Confirm and update':'Confirm and save'}</button><button class="btn o" style="margin-top:10px" onclick="AT.step='';render()">Edit</button><p class="note" id="svm"></p>`}
+function doneView(){const t=LAST;return hdr()+`<div class="card empty"><h2>${t.edit?'Trade updated':'Trade saved'}</h2><p class="m">${esc(t.sym)} · ${t.side=='long'?'Long':'Short'}</p>${t.open?'<div class="big" style="font-size:34px;margin:8px 0">Open trade</div><p class="m">It will count in your stats once you close it.</p>':`<div class="big ${cl(t.res)}" style="font-size:40px;margin:8px 0">${sg(t.res)}</div>`}${t.rr!=null?`<p class="m">Planned R:R 1 : ${t.rr.toFixed(2)}</p>`:''}<button class="btn" style="margin-top:16px" onclick="resetAT();go('journal')">View journal</button><button class="btn o" style="margin-top:10px" onclick="resetAT();render()">Add another</button></div>`}
+async function saveTrade(){if(!USER||MODE=='demo')return;const m=$('#svm'),ins=INS.find(i=>i[0]==AT.sym),o=calc(),cl_=isClosed(AT),res=cl_?finalRes(AT,o):null,c=cls(AT.sym);
+if(!ins||(cl_&&res==null))return m.textContent='Something is missing. Tap Edit and check your numbers.';
+$('#sv').disabled=true;m.textContent='Saving...';
+try{let sid=null;if(AT.strat){const q=await SB.from('strategies').select('id').eq('name',AT.strat).maybeSingle();if(q.error)throw q.error;if(q.data)sid=q.data.id;else{const i=await SB.from('strategies').insert({name:AT.strat}).select('id').single();if(i.error)throw i.error;sid=i.data.id}}
+const shots=AT.shots.slice();for(let k=0;k<AT.ns.length;k++){const p=USER.id+'/'+Date.now()+'-'+k+'.jpg',u=await SB.storage.from('trade-shots').upload(p,AT.ns[k].b,{contentType:'image/jpeg'});if(u.error)throw new Error('Screenshot upload failed: '+u.error.message);shots.push(p)}
+const row={instrument_id:ins[5],side:AT.side,entry_price:nn(AT.entry),exit_price:nn(AT.exit),stop_loss:o.slP||null,take_profit:o.tpP||null,position_size:c=='crypto'?(o.qty?+o.qty.toFixed(8):null):nn(AT.size),leverage:c=='crypto'?o.lev:null,risk_amount:o.risk==null?null:+o.risk.toFixed(2),risk_pct:o.riskPct==null?null:+o.riskPct.toFixed(2),pnl:cl_?+res.toFixed(2):null,session:AT.session||null,strategy_id:sid,notes:AT.notes||null,emotion:AT.emo||null,mistakes:AT.mis,opened_at:new Date(AT.at).toISOString(),closed_at:cl_?new Date(AT.xt).toISOString():null};
+if(shots.length||AT.edit)row.screenshots=shots;
+const r=AT.edit?await SB.from('trades').update(row).eq('id',AT.edit):await SB.from('trades').insert(row);if(r.error)throw r.error;
+LAST={sym:AT.sym,side:AT.side,res,open:!cl_,rr:o.rr==null?null:o.rr,edit:!!AT.edit};resetAT();AT.step='done';await loadTrades();render();scrollTo(0,0)}
+catch(e){m.textContent=(e.message||'Could not save.')+(/screenshots/.test(e.message||'')?' Run the screenshots database update first.':'');const b=$('#sv');if(b)b.disabled=false}}
+const atFrom=t=>{const c=cls(t.sym);return{edit:t.id,sym:t.sym,side:t.side,at:loc(t.d),xt:t.open?'':loc(t.cd),entry:t.e==null?'':String(t.e),exit:t.x==null?'':String(t.x),sl:t.sl==null?'':String(t.sl),tp:t.tp==null?'':String(t.tp),slm:'p',tpm:'p',val:c=='crypto'&&t.val?String(+t.val.toFixed(2)):'',size:c!='crypto'&&t.q?String(t.q):'',lev:t.lev?String(t.lev):'',pnl:'',session:t.session||'',sesMan:true,strat:t.strat,emo:t.emo||'',mis:t.mis.slice(),notes:t.notes,shots:t.shots.slice(),ns:[],step:''}};
+function editT(id,closing){const t=TR().find(x=>x.id==id);if(!t)return;AT=atFrom(t);if(closing){AT.closing=true;AT.xt=nowLocal()}view='add';render();scrollTo(0,0)}
+V.detail=()=>{const t=TR().find(x=>x.id==DID),back=`<div class="top"><button class="ib" onclick="go('journal')" aria-label="Back">${ic('back',20)}</button><h1 style="font-size:26px;flex:1">Trade details</h1></div>`;
+if(!t)return hdr()+back+none('Trade not found.');const real=MODE=='real',a=t.e?atFrom(t):null,o=a?calc(a):{},R=t.risk>0&&!t.open?t.pnl/t.risk:null,c=cls(t.sym),f=x=>x==null?'—':fmtN(x);
+return hdr()+back+`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:20px">${esc(t.sym)}</b><div class="m">${t.side=='long'?'Long':'Short'} · ${t.open?'Open':'Closed'}</div></div>${t.open?'<span class="tag">Open</span>':`<div class="big ${cl(t.pnl)}" style="font-size:34px">${sg(t.pnl)}</div>`}</div></div>
+<div class="card">${rw('Entry time',esc(fdt(t.d)))}${rw('Exit time',t.open?'—':esc(fdt(t.cd)))}${rw('Holding time',t.open?hold(t.d,new Date()):hold(t.d,t.cd))}${rw('Entry',f(t.e))}${rw('Exit',f(t.x))}${rw('Stop loss',f(t.sl))}${rw('Take profit',f(t.tp))}${c=='crypto'?rw('Position value',t.val?money(t.val):'—')+rw('Leverage',t.lev?t.lev+'x':'—')+rw('Margin',t.val?money(t.val/(t.lev||1)):'—'):rw('Lot size',t.q==null?'—':t.q)}</div>
+<div class="card">${rw('Risk',t.risk>0?money(t.risk):'Not tracked')}${rw('Planned R:R',o.rr!=null?'1 : '+o.rr.toFixed(2):'—')}${rw('Achieved R',R==null?'—':R.toFixed(2)+'R')}</div>
+<div class="card">${rw('Setup',esc(t.strat||'—'))}${rw('Session',esc(SES[t.session]||'—'))}${rw('Feeling',esc(t.emo||'—'))}${rw('Mistakes',esc(t.mis.join(', ')||'—'))}${rw('Notes',esc(t.notes||'—'))}</div>
+${t.shots&&t.shots.length?`<div class="card"><h3>Screenshots</h3><div class="chips">${t.shots.map(p=>`<div class="sh" style="width:110px;height:110px"><img data-p="${esc(p)}" alt="Screenshot" onclick="if(this.src)window.open(this.src,'_blank')"></div>`).join('')}</div></div>`:''}
+${real?`<button class="btn" onclick="editT('${t.id}')">Edit trade</button>${t.open?`<button class="btn o" style="margin-top:10px" onclick="editT('${t.id}',1)">Close trade</button>`:''}<button class="btn o" style="margin-top:10px;color:#ff8a8d" onclick="delT('${t.id}')">Delete trade</button>`:'<p class="note">Demo trades are read-only.</p>'}`};
+function pickPairPlaceholder(){}
+const LEGAL={
+privacy:['Privacy Policy',[['Who we are','LW4L EDGE is operated by LW4L, based in Nigeria.'],['What we collect','Your email address and display name; the account size and currency you enter; the trades, notes and screenshots you add; and basic technical data your browser sends when it connects to our services.'],['How we use it','To run your account, save and show your journal, calculate your statistics and keep the service secure. We do not sell your data and we do not use it for advertising.'],['Where it is stored','Your data is stored with Supabase (database, sign-in and file storage). The app is hosted on GitHub Pages. Live crypto prices are requested directly from your device to Binance or Coinbase, which can see your IP address when that happens.'],['Who can see it','Your trades and screenshots are private to your account. We share data only with the service providers named above to run the service, or when the law requires it.'],['Your rights','Under the Nigeria Data Protection Act 2023 you can ask to access, correct, export or delete your data. You can export your trades from the Account page. For deletion or any other request, contact us using the link below.'],['How long we keep it','While your account is active. After a deletion request we remove your data within a reasonable period, except where the law requires us to keep something.'],['Security','We use encrypted connections and per-user access rules in the database so accounts cannot read each other\'s data. No system is completely secure.'],['Age','LW4L EDGE is for people aged 18 and over.'],['Changes','We may update this policy and will change the date shown. Last updated: 9 October 2026.']]],
+terms:['Terms of Use',[['Using LW4L EDGE','LW4L EDGE is a trading journal and analytics tool. By creating an account you agree to these terms and the Privacy Policy. You must be 18 or older.'],['Not financial advice','Nothing in the app is financial, investment, legal or tax advice, and we do not recommend any trade. All decisions and results are yours.'],['Calculations and prices','Calculators, estimates (including liquidation and currency conversions) and prices are for information only and may be wrong or delayed. Always check with your broker or exchange before acting.'],['Your account','Keep your password safe. You are responsible for activity on your account and for the accuracy of the data you enter.'],['Your content','You own your trades, notes and screenshots. You allow us to store and process them to provide the service. Do not upload anything unlawful or that you have no right to share.'],['Acceptable use','Do not attack, overload or reverse engineer the service, access other users\' data, or use the service to break the law.'],['Availability','We aim to keep the service running but do not promise it will always be available or error free. Features may change. The service may be free today and paid plans may be introduced later.'],['Liability','To the extent the law allows, LW4L is not liable for trading losses or for indirect or consequential loss arising from use of the app.'],['Ending use','You can stop using the service at any time. We may suspend accounts that break these terms.'],['Governing law','These terms are governed by the laws of the Federal Republic of Nigeria.'],['Changes','We may update these terms and will change the date shown. Last updated: 9 October 2026.']]],
+risk:['Risk Disclaimer',[['Trading is risky','Trading crypto, forex, gold and other markets carries a high risk of loss. You can lose some or all of your money.'],['Leverage','Leverage magnifies both gains and losses and can lead to liquidation of your position. Liquidation figures shown in the app are rough estimates only.'],['No guarantees','Past results do not guarantee future results. Demo data in the app is fictional and is not a prediction.'],['Your decisions','Only trade with money you can afford to lose. Consider advice from a licensed financial adviser. LW4L EDGE is a journaling tool and does not give advice.']]]};
+let DLGFN=null;
+function ask(t,m,ok,fn){DLGFN=fn;$('#dlgt').textContent=t;$('#dlgm').textContent=m;$('#dlgo').textContent=ok;$('#dlg').style.display='flex'}
+function dlgClose(){$('#dlg').style.display='none';DLGFN=null}
+function dlgOk(){const f=DLGFN;dlgClose();if(f)f()}
+function askLogout(){ask('Log out?','You will need to sign in again to see your journal.','Log out',signOut)}
+function saveNav(){if(!USER)return;try{localStorage.setItem('lw4l_nav',JSON.stringify({view,cur,did:DID,mode:MODE,tf}))}catch(e){}}
+function restoreNav(){try{const n=JSON.parse(localStorage.getItem('lw4l_nav')||'null');if(n){if(n.mode=='demo'||n.mode=='real')MODE=n.mode;if(n.cur&&sym(n.cur))cur=n.cur;if(n.did)DID=n.did;if(['1H','4H','1D','7D','30D'].includes(n.tf))tf=n.tf;return n.view}}catch(e){}return null}
+function showLegal(k){const L=LEGAL[k];$('#lgt').textContent=L[0];$('#lgb').innerHTML=L[1].map(s=>`<h3>${esc(s[0])}</h3><p>${esc(s[1])}</p>`).join('')+'<h3>Contact</h3><p><a href="https://x.com/officiallw4l" target="_blank" rel="noopener" style="color:#fff">x.com/officiallw4l</a></p>';$('#legal').style.display='block';$('#legal').scrollTop=0}
+function closeLegal(){$('#legal').style.display='none'}
+V.acct=()=>hdr()+`<h1 style="font-size:28px;margin-bottom:12px">Account</h1><div class="card" style="display:flex;gap:14px;align-items:center"><div class="av">${esc(((NAME||(USER&&USER.email)||'?')[0]).toUpperCase())}</div><div><b style="font-size:18px">${esc(NAME||'Trader')}</b><div class="m">${esc(USER?USER.email:'')}</div></div></div>
+${PROF.account_balance==null?'<div class="edge"><b>Set your account size</b><br><span class="m">We use it to calculate your balance, buying power and risk.</span></div>':''}
+<div class="card"><h3>Profile and account</h3><label class="lab" for="an">Display name</label><input id="an" class="in" maxlength="40" value="${esc(NAME)}"><label class="lab" for="ac">Currency</label><select id="ac" class="in">${['USD','EUR','GBP','JPY','AUD','CAD','CHF','NGN'].map(c=>`<option ${c==PROF.currency?'selected':''}>${c}</option>`).join('')}</select><label class="lab" for="ab">Starting account size</label><input id="ab" class="in" type="number" inputmode="decimal" min="0" step="any" placeholder="e.g. 5000" value="${PROF.account_balance??''}"><button class="btn" onclick="saveProf()">Save</button><p class="note" id="sm"></p></div>
+<div class="card"><h3>Mode</h3><div class="seg" style="margin-bottom:6px"><button class="${MODE=='real'?'on':''}" onclick="setMode('real')">Real</button><button class="${MODE=='demo'?'on':''}" onclick="setMode('demo')">Demo</button></div><p class="note">Demo shows sample data and never saves anything.</p></div>
+<div class="card"><h3>Security</h3><label class="lab" for="np">New password</label><input id="np" class="in" type="password" autocomplete="new-password" oninput="pwChk()"><div class="pr" id="npr"></div><button class="btn o" onclick="chgPw()">Change password</button><p class="note" id="pm"></p></div>
+<div class="card"><h3>Your data</h3><button class="btn o" onclick="exportCsv()">Export my trades (CSV)</button></div>
+<div class="card"><h3>About</h3><div class="row" onclick="showLegal('privacy')" style="cursor:pointer"><span class="s">Privacy Policy</span></div><div class="row" onclick="showLegal('terms')" style="cursor:pointer"><span class="s">Terms of Use</span></div><div class="row" onclick="showLegal('risk')" style="cursor:pointer"><span class="s">Risk Disclaimer</span></div><div class="row"><a class="s" href="https://x.com/officiallw4l" target="_blank" rel="noopener" style="color:#fff">Contact LW4L on X</a></div></div>
+<button class="btn o" onclick="askLogout()">Log out</button>`;
+async function saveProf(){const b=nn($('#ab').value),c=$('#ac').value,n=$('#an').value.trim(),m=$('#sm');if(!n)return m.textContent='Enter a display name.';if(b!=null&&!(b>=0))return m.textContent='Enter your account size as a number.';m.textContent='Saving...';const u={display_name:n,currency:c};if(b!=null)u.account_balance=b;const{error}=await SB.from('profiles').update(u).eq('id',USER.id);if(error)return m.textContent=error.message;NAME=n;PROF.currency=c;if(b!=null)PROF.account_balance=b;render();$('#sm').textContent='Saved.'}
+function pwChk(){const p=$('#np').value;$('#npr').innerHTML=RULES.map(r=>`<span class="${r[1](p)?'ok':''}">${r[0]}</span>`).join('')}
+async function chgPw(){const p=$('#np').value,m=$('#pm');if(!RULES.every(r=>r[1](p)))return m.textContent='Your new password does not meet all the requirements yet.';m.textContent='Saving...';const{error}=await SB.auth.updateUser({password:p});m.textContent=error?error.message:'Password changed.';if(!error)$('#np').value=''}
+function exportCsv(){const h=['Entry time','Exit time','Pair','Side','Entry','Exit','Stop loss','Take profit','Quantity','Leverage','Risk','Result','Status','Setup','Session','Feeling','Mistakes','Notes'],q=v=>{let s=v==null?'':String(v);if(typeof v=='string'&&/^[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'},rows=RT.map(t=>[t.d.toISOString(),t.open?'':t.cd.toISOString(),t.sym,t.side,t.e,t.x,t.sl,t.tp,t.q,t.lev,t.risk,t.open?'':t.pnl,t.open?'Open':'Closed',t.strat,t.session,t.emo,t.mis.join('; '),t.notes]),csv=[h,...rows].map(r=>r.map(q).join(',')).join('\n'),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='lw4l-edge-trades.csv';a.click()}
+function pickPair(s){AT.sym=s;PICK=false;closeS();render()}
+let LV={status:'none'},QT={},LVTOK=0,pbusy=false,pcnt=0;
+const LIVEOK=i=>!!i&&(i[6]=='binance'||i[6]=='coinbase');
+const fmtN=n=>n==null||isNaN(n)?'—':n.toLocaleString(undefined,{minimumFractionDigits:dec(Math.abs(n)),maximumFractionDigits:dec(Math.abs(n))});
+const BIN=['https://data-api.binance.vision','https://api.binance.com'];
+const TFC={'1H':['1m',60,60,60],'4H':['5m',48,300,48],'1D':['15m',96,900,96],'7D':['1h',168,3600,168],'30D':['4h',180,21600,120]};
+async function jget(u){const r=await fetch(u);if(!r.ok)throw new Error('HTTP '+r.status);return r.json()}
+async function cbMarket(prod,tfk){const[,,cg,cc]=TFC[tfk];const[c,s]=await Promise.all([jget(`https://api.exchange.coinbase.com/products/${prod}/candles?granularity=${cg}`),jget(`https://api.exchange.coinbase.com/products/${prod}/stats`)]);const last=+s.last,open=+s.open;return{src:'Coinbase',pts:c.slice(0,cc).reverse().map(x=>[x[0]*1000,+x[4]]),last,hi:+s.high,lo:+s.low,pct:open?(last-open)/open*100:0,chg:last-open}}
+async function fetchMarket(i,tfk){const[bi,bl]=TFC[tfk],ps=i[7];
+if(i[6]=='binance'){for(const b of BIN){try{const[k,t]=await Promise.all([jget(`${b}/api/v3/klines?symbol=${ps}&interval=${bi}&limit=${bl}`),jget(`${b}/api/v3/ticker/24hr?symbol=${ps}`)]);return{src:'Binance',pts:k.map(x=>[x[0],+x[4]]),last:+t.lastPrice,hi:+t.highPrice,lo:+t.lowPrice,pct:+t.priceChangePercent,chg:+t.priceChange}}catch(e){}}
+return cbMarket(ps.replace(/(USDT|USDC)$/,'')+'-USD',tfk)}
+return cbMarket(ps,tfk)}
+async function tick(i){const ps=i[7];if(i[6]=='binance'){for(const b of BIN){try{const t=await jget(`${b}/api/v3/ticker/24hr?symbol=${ps}`);return{last:+t.lastPrice,hi:+t.highPrice,lo:+t.lowPrice,pct:+t.priceChangePercent,chg:+t.priceChange}}catch(e){}}}
+const p=i[6]=='binance'?ps.replace(/(USDT|USDC)$/,'')+'-USD':ps,s=await jget(`https://api.exchange.coinbase.com/products/${p}/stats`),last=+s.last,open=+s.open;return{last,hi:+s.high,lo:+s.low,pct:open?(last-open)/open*100:0,chg:last-open}}
+const pst=()=>LV.sym==cur?LV.status:(LIVEOK(sym(cur))?'loading':'demo');
+function badge(){const s=pst();if(s=='live')return`<span class="live">LIVE</span> <span class="m" style="font-size:12px">${esc(LV.src)} · updates every few seconds</span>`;
+if(s=='loading')return'<span class="live demo">LOADING</span>';
+return`<span class="live demo">DEMO DATA</span> <span class="m" style="font-size:12px">${s=='error'?'Live feed unavailable right now. Showing sample data.':'Live forex and gold prices are coming next.'}</span>`}
+const tlab=ms=>['1H','4H','1D'].includes(tf)?new Date(ms).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):new Date(ms).toLocaleDateString([],{month:'short',day:'numeric'});
+function pvals(){const i=sym(cur),l=pst()=='live';return{l,last:l?LV.last:i[3],pct:l?LV.pct:i[4],chg:l?LV.chg:null}}
+function chartHtml(){const i=sym(cur),{l,pct}=pvals(),col=pct>=0?'#22c17a':'#ff4d52',s=pst();
+if(l&&LV.pts&&LV.pts.length>1)return line(LV.pts.map(p=>p[1]),col,'p1')+`<div class="m" style="display:flex;justify-content:space-between;font-size:12px"><span>${tlab(LV.pts[0][0])}</span><span>${tlab(LV.pts[LV.pts.length-1][0])}</span></div>`;
+if(s=='loading')return line([1,1],'#8d8585','p1')+'<p class="note">Loading prices...</p>';
+const n={'1H':60,'4H':48,'1D':96,'7D':84,'30D':90}[tf],a=series(i[3]*7%999+tf.length,n,i[3]*.97,.012,.0004);a[n-1]=i[3];return line(a,col,'p1')}
+const pctTxt=()=>{const v=pvals();return`${v.pct>0?'+':''}${v.pct.toFixed(2)}% today${v.chg!=null?` (${v.chg>0?'+':''}${fmtN(v.chg)})`:''}`};
+function paintPair(){if(view!='pair')return;const v=pvals(),set=(id,h)=>{const e=$(id);if(e)e.innerHTML=h};set('#badge',badge());set('#px',fmtN(v.last));const p=$('#pc');if(p){p.className=cl(v.pct);p.textContent=pctTxt()}set('#chart',chartHtml());set('#hi',v.l?fmtN(LV.hi):'—');set('#lo',v.l?fmtN(LV.lo):'—')}
+V.pair=()=>{const i=sym(cur),v=pvals();return`<div class="top"><button class="ib" onclick="go('fav')" aria-label="Back">${ic('back',20)}</button><div style="flex:1"><h1 style="font-size:26px">${i[0]}</h1><small class="m">${i[1]}</small></div><button class="star ${fav.has(cur)?'on':''}" onclick="tog('${cur}')">${ic('star',22)}</button></div>
+<div class="card"><div id="badge">${badge()}</div><div class="big" id="px" style="font-size:44px;margin-top:6px">${fmtN(v.last)}</div><b id="pc" class="${cl(v.pct)}">${pctTxt()}</b>
+<div id="chart" style="margin:10px 0">${chartHtml()}</div><div class="chips" style="margin:0">${['1H','4H','1D','7D','30D'].map(t=>`<button class="chip ${t==tf?'on':''}" onclick="setTf('${t}')">${t}</button>`).join('')}</div></div>
+<div class="grid"><div class="k"><small>24h high</small><div class="big" id="hi">${v.l?fmtN(LV.hi):'—'}</div></div><div class="k"><small>24h low</small><div class="big" id="lo">${v.l?fmtN(LV.lo):'—'}</div></div></div>
+<button class="btn" style="margin-top:12px" onclick="go('add');AT.sym='${cur}';render()">Log a trade on ${i[0]}</button>`};
+async function loadPair(){const i=sym(cur),tok=++LVTOK;if(!LIVEOK(i)){LV={sym:cur,status:'demo'};return paintPair()}
+LV={sym:cur,status:'loading'};paintPair();
+try{const d=await fetchMarket(i,tf);if(tok!=LVTOK)return;LV=Object.assign({sym:cur,status:'live'},d)}catch(e){if(tok!=LVTOK)return;LV={sym:cur,status:'error'}}
+paintPair()}
+function setTf(t){tf=t;render();loadPair()}
+async function loadQuotes(){const l=INS.filter(i=>fav.has(i[0])&&LIVEOK(i));await Promise.all(l.map(async i=>{try{QT[i[0]]=await tick(i)}catch(e){}}));if(view=='fav')render()}
+const qv=i=>{const q=QT[i[0]];return q?`${fmtN(q.last)}<small class="${cl(q.pct)}" style="display:block">${q.pct>0?'+':''}${q.pct.toFixed(2)}%</small>`:`<span class="m">${i[3].toFixed(dec(i[3]))}</span><small class="m" style="display:block">demo</small>`};
+setInterval(async()=>{if(document.hidden)return;pcnt++;
+if(view=='pair'&&LV.sym==cur&&LV.status=='live'&&!pbusy){pbusy=true;try{const t=await tick(sym(cur));if(LV.sym==cur&&LV.status=='live'){Object.assign(LV,t);if(LV.pts&&LV.pts.length)LV.pts[LV.pts.length-1][1]=t.last;paintPair()}}catch(e){}pbusy=false}
+if(view=='fav'&&pcnt%3==0)loadQuotes()},3000);
+SB.auth.onAuthStateChange(ev=>{if(ev=='PASSWORD_RECOVERY'){const p=prompt('Choose a new password (8+ characters)');if(p&&p.length>=8)SB.auth.updateUser({password:p}).then(r=>alert(r.error?r.error.message:'Password updated.'))}});
+SB.auth.getSession().then(({data})=>{if(data.session)onSession(data.session,true);else showLogin()}).catch(()=>showLogin());
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+render();
+</script></body></html>
