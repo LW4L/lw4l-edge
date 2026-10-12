@@ -1,5 +1,5 @@
-const C='lw4l-edge-v3',SCOPE=self.registration.scope;
-const SHELL=['./','index.html','manifest.json','logo.png','icon-192-1.png','icon-512-1.png','icon-192.png','icon-512.png'];
+const C='edge-v4',SCOPE=self.registration.scope;
+const SHELL=['./','index.html','manifest.json','edge-logo-v2.png','edge-icon-v2-192.png','edge-icon-v2-512.png'];
 const EXT=['https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js'];
 const isExt=u=>u.hostname=='cdn.jsdelivr.net'||u.hostname=='fonts.googleapis.com'||u.hostname=='fonts.gstatic.com';
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>Promise.allSettled([...SHELL.map(u=>c.add(u)),...EXT.map(u=>c.add(new Request(u,{mode:'no-cors'})))]))); self.skipWaiting()});
